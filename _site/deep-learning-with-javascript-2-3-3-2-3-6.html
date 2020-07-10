@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 2.3.3-2.3.6</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 2.3.3-2.3.6</h1>
+        <article>
+    <section class="header">
+        Posted on April  1, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter two of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<p><AnchorLinks> <AnchorLink>2.3.3 Accessing Boston Housing Data</AnchorLink> <AnchorLink>2.3.4 Precisely Defining the Boston Housing Problem</AnchorLink> <AnchorLink>2.3.5 Data Normalization</AnchorLink> </AnchorLinks></p>
+<h3 id="accessing-boston-housing-data">2.3.3 Accessing Boston Housing Data</h3>
+<p>Typically downloading data from a URL or Google Cloud Storage Bucket will be the easiest way to manage and process data for training and testing a model. Beyond training and testing the Boston Housing Data sets have a third of the data dedicated to the validation of the model in order to independently evaluate its performance.</p>
+<h3 id="precisely-defining-the-boston-housing-problem">2.3.4 Precisely Defining the Boston Housing Problem</h3>
+<ol type="1">
+<li>Step one is to download and convert the data to the approriate shape.</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">const</span> Papa <span class="op">=</span> <span class="pp">require</span>(<span class="st">'papaparse'</span>)<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">const</span> BASE_URL <span class="op">=</span> <span class="st">'https://storage.googleapis.com/tfjs-examples/multivariate-linear-regression/data/'</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">const</span> TRAIN_FEATURES_FN <span class="op">=</span> <span class="st">'train-data.csv'</span><span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="kw">const</span> TRAIN_TARGET_FN <span class="op">=</span> <span class="st">'train-target.csv'</span><span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="kw">const</span> TEST_FEATURES_FN <span class="op">=</span> <span class="st">'test-data.csv'</span><span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="kw">const</span> TEST_TARGET_FN <span class="op">=</span> <span class="st">'test-target.csv'</span><span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="kw">const</span> parseCSV <span class="op">=</span> <span class="kw">async</span> (data) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>  <span class="cf">return</span> <span class="kw">new</span> <span class="bu">Promise</span>( resolve <span class="kw">=&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>    data <span class="op">=</span> data<span class="op">.</span><span class="fu">map</span>((row) <span class="kw">=&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>      <span class="cf">return</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(row)<span class="op">.</span><span class="fu">map</span>(key <span class="kw">=&gt;</span> <span class="pp">parseFloat</span>(row[key]))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>    )</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>    <span class="fu">resolve</span>(data)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>  )</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a><span class="kw">const</span> loadCSV <span class="op">=</span> <span class="kw">async</span> (filename) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a>  <span class="cf">return</span> <span class="kw">new</span> <span class="bu">Promise</span>(resolve <span class="kw">=&gt;</span> {</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>    <span class="kw">const</span> url <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>BASE_URL<span class="sc">}${</span>filename<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`  * Downloading data from: </span><span class="sc">${</span>url<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a>    Papa<span class="op">.</span><span class="fu">parse</span>(url<span class="op">,</span> {</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true"></a>      <span class="dt">download</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true"></a>      <span class="dt">header</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true"></a>      <span class="dt">complete</span><span class="op">:</span> (results) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true"></a>        <span class="fu">resolve</span>(<span class="fu">parseCSV</span>(results[<span class="st">'data'</span>]))<span class="op">;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true"></a>      }</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true"></a>    })</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true"></a>  })<span class="op">;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true"></a>}<span class="op">;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true"></a><span class="im">export</span> <span class="kw">class</span> BostonHousingDataset{</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true"></a>  <span class="fu">constructor</span>(){</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">trainFeatures</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">trainTarget</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">testFeatures</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">testTarget</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true"></a>  }</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true"></a>  get <span class="fu">numFeatures</span>(){</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true"></a>    <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">trainFeatures</span> <span class="op">=</span> <span class="kw">null</span>){</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true"></a>      <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="vs">`'loadData() must be called before 'numfeatures()'`</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true"></a>    }</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true"></a>    <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span><span class="at">trainFeatures</span>[<span class="dv">0</span>]<span class="op">.</span><span class="at">length</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true"></a>  }</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true"></a>  <span class="kw">async</span> <span class="fu">loadData</span>(){</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true"></a>    [<span class="kw">this</span><span class="op">.</span><span class="at">trainFeatures</span><span class="op">,</span><span class="kw">this</span><span class="op">.</span><span class="at">trainTarget</span><span class="op">,</span><span class="kw">this</span><span class="op">.</span><span class="at">testFeatures</span><span class="op">,</span><span class="kw">this</span><span class="op">.</span><span class="at">testTarget</span>] <span class="op">=</span> </span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true"></a>      <span class="cf">await</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">all</span>([</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true"></a>        <span class="fu">loadCSV</span>(TRAIN_FEATURES_FN)<span class="op">,</span> <span class="fu">loadCSV</span>(TRAIN_TARGET_FN)<span class="op">,</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true"></a>        <span class="fu">loadCSV</span>(TEST_FEATURES_FN)<span class="op">,</span> <span class="fu">loadCSV</span>(TEST_TARGET_FN)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true"></a>      ])</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true"></a>    </span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true"></a>    <span class="fu">shuffle</span>(<span class="kw">this</span><span class="op">.</span><span class="at">trainFeatures</span><span class="op">,</span><span class="kw">this</span><span class="op">.</span><span class="at">trainTarget</span>)</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true"></a>    <span class="fu">shuffle</span>(<span class="kw">this</span><span class="op">.</span><span class="at">testFeatures</span><span class="op">,</span><span class="kw">this</span><span class="op">.</span><span class="at">testTarget</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true"></a>  }</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true"></a>}</span></code></pre></div>
+<p>with shuffle and featureDescriptions defined as</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">function</span> <span class="fu">shuffle</span> (data<span class="op">,</span> target) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>  <span class="kw">let</span> counter <span class="op">=</span> data<span class="op">.</span><span class="at">length</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="kw">let</span> temp <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>  <span class="kw">let</span> index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>  <span class="cf">while</span> (counter <span class="op">&gt;</span> <span class="dv">0</span> ) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>    index <span class="op">=</span> (<span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>() <span class="op">*</span> counter) <span class="op">|</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>    counter<span class="op">--;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>    temp <span class="op">=</span> data[counter]<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>    data[counter] <span class="op">=</span> data[index]<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>    data[index] <span class="op">=</span> temp</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a>    temp <span class="op">=</span> target[counter]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>    target[counter]<span class="op">=</span> target[index]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a>    target[index] <span class="op">=</span> temp</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a>  }</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a>}</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a><span class="im">export</span> <span class="kw">const</span> featureDescriptions <span class="op">=</span> [</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a>  <span class="st">'Crime rate'</span><span class="op">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a>  <span class="st">'Land zone size'</span><span class="op">,</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true"></a>  <span class="st">'Industrial proportion'</span><span class="op">,</span> </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true"></a>  <span class="st">'Next to river'</span><span class="op">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true"></a>  <span class="st">'Nitric oxide concentration'</span><span class="op">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true"></a>  <span class="st">'Number of rooms per house'</span><span class="op">,</span> </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true"></a>  <span class="st">'Age of housing'</span><span class="op">,</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true"></a>  <span class="st">'Distance to commute'</span><span class="op">,</span> </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true"></a>  <span class="st">'Distance to highway'</span><span class="op">,</span> </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true"></a>  <span class="st">'Tax rate'</span><span class="op">,</span> </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true"></a>  <span class="st">'School class size'</span><span class="op">,</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true"></a>  <span class="st">'School drop-out rate'</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true"></a>]<span class="op">;</span></span></code></pre></div>
+<p>then we define our workflow with the following</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> tf <span class="im">from</span> <span class="st">'@tensorflow/tfjs'</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> tfviz <span class="im">from</span> <span class="st">'@tensorflow/tfjs-vis'</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="im">import</span> {BostonHousingDataset<span class="op">,</span> featureDescriptions} <span class="im">from</span> <span class="st">'./data'</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> normalization <span class="im">from</span> <span class="st">'./normalization'</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> ui <span class="im">from</span> <span class="st">'./ui'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="kw">const</span> NUM_EPOCHS <span class="op">=</span> <span class="dv">200</span><span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="kw">const</span> BATCH_SIZE <span class="op">=</span> <span class="dv">40</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="kw">const</span> LEARNING_RATE <span class="op">=</span> <span class="fl">0.01</span><span class="op">;</span></span></code></pre></div>
+<ol start="2" type="1">
+<li>Then we convert it to a tensor using the same API as before with the download example.</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">const</span> bostonData <span class="op">=</span> <span class="kw">new</span> <span class="fu">BostonHousingDataset</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">const</span> tensors <span class="op">=</span> {}</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="im">export</span> <span class="kw">const</span> arraysToTensors <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>    tensors<span class="op">.</span><span class="at">trainFeatures</span> <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">trainFeatures</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>    tensors<span class="op">.</span><span class="at">trainTarget</span>   <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">trainTarget</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>    tensors<span class="op">.</span><span class="at">testFeatures</span>  <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">testFeatures</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>    tensors<span class="op">.</span><span class="at">testTarget</span><span class="op">.</span>   <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">testTarget</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>}</span></code></pre></div>
+<p>In the Last example we used mean absolute error this one is not very sensitive to large outliers. An alternative optimizer is mean squared error which will prefer models that make smaller mistakes.</p>
+<ol start="3" type="1">
+<li>The next step is to determine a baseline loss estimation. If we cant evaluate the error from a simple estimate we can’t evaluate it from a more complicated model. For this example we use the average price as a way to gauge the error when always guessing tht value.</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="im">export</span> <span class="kw">const</span> computeBaseline <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>  <span class="kw">const</span> averagePrice <span class="op">=</span> tf<span class="op">.</span><span class="fu">mean</span>(tensors<span class="op">.</span><span class="at">trainTarget</span>)<span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`  * Average Price: </span><span class="sc">${</span>averagePrice<span class="op">.</span><span class="fu">dataSync</span>()[<span class="dv">0</span>]<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>  <span class="co">// Calculate mean squared error</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>  <span class="kw">const</span> baseline <span class="op">=</span> tf<span class="op">.</span><span class="fu">mean</span>(tf<span class="op">.</span><span class="fu">pow</span>(tf<span class="op">.</span><span class="fu">sub</span>(tensors<span class="op">.</span><span class="at">testTarget</span><span class="op">,</span> avgPrice)<span class="op">,</span><span class="dv">2</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`  * Baseline Loss: </span><span class="sc">${</span>baseline<span class="op">.</span><span class="fu">dataSync</span>()[<span class="dv">0</span>]<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>}</span></code></pre></div>
+<p>The call to <code>dataSync()</code> here is to pull the TensorFlow.js value from the GPU to the CPU.</p>
+<ol start="4" type="1">
+<li>The square root of the output from this baseline loss function is our error and we can expect to be incorrect by this value.. From here we use machine learning to achieve a better MSE.</li>
+</ol>
+<h3 id="data-normalization">2.3.5 Data Normalization</h3>
+<p>Linear regression works by the optimizer multiplying the weights times the features and searching for a weight. Thi is so that the sum of the weights times the features is equal to the home price. To do this the optimizer is following a gradient in the weight space. Becaus small changes in one direction can have large impacts and very large moves can have little impact, this can cause instability in the model.</p>
+<p>To counteract these differences we will normalize our data. This means we will scale features so they have a zero mean and unit standard deviation. This is sometimes calles <em>standard transformation</em> or <em>z-score normalization</em></p>
+<h6 id="the-algorithm-is-simple">The algorithm is simple:</h6>
+<ol type="1">
+<li>Calculate the mean of each feature and subtract it from the value</li>
+<li>Then calculate the feature subtracted by the mean of the feature</li>
+<li>Divide the above by the the standard deviation of the feature</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>normalizeFeature <span class="op">=</span> (feature <span class="op">-</span> <span class="fu">mean</span>(feature)) <span class="op">/</span> <span class="fu">std</span>(feature) </span></code></pre></div>
+<p>or with TensorFlow.js ```js export function determineMeanAndStandardDeviation () { const dataMean = data.mean(0); const differenceFromMean = data.sub(dataMean); const squaredDrifferenceFromMean = differenceFromMean.squared() const variance = squaredDrifferenceFromMean.mean(0); const dataStandardDeviation = variance.sqrt() return {dataMean, dataStandardDeviation} }</p>
+<p>export function normalizeTensor(data,dataMean, dataStandardDeviation) { return data.sub(dataMean).div(dataStandardDeviation) } ```</p>
+<p>The 0 in this call means the mean will be taken over the <code>0th</code> index in data. The data var is a 2d Array of data or a rank2 tensor and thus has 2 dimensions.</p>
+<h3 id="linear-regression">2.3.6 Linear Regression</h3>
+<p>Once data is normalized we can calculate a baseline. We can now build and fit a model</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="kw">const</span> bostonData <span class="op">=</span> <span class="kw">new</span> <span class="fu">BostonHousingDataset</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a><span class="kw">const</span> tensors <span class="op">=</span> {}</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a><span class="im">export</span> <span class="kw">const</span> arraysToTensors <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>  tensors<span class="op">.</span><span class="at">rawTrainFeatures</span> <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">trainFeatures</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>  tensors<span class="op">.</span><span class="at">trainTarget</span>   <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">trainTarget</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>  tensors<span class="op">.</span><span class="at">rawTestFeatures</span>  <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">testFeatures</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>  tensors<span class="op">.</span><span class="at">testTarget</span>    <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(bostonData<span class="op">.</span><span class="at">testTarget</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a>  <span class="kw">let</span> {dataMean<span class="op">,</span> dataStandardDeviation} <span class="op">=</span> normalization<span class="op">.</span><span class="fu">determineMeanAndStandardDeviation</span>(tensors<span class="op">.</span><span class="at">rawTrainFeatures</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a>  tensors<span class="op">.</span><span class="at">trainFeatures</span> <span class="op">=</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a>    normalization<span class="op">.</span><span class="fu">normalizeTensor</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a>      tensors<span class="op">.</span><span class="at">rawTrainFeatures</span><span class="op">,</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a>      dataMean<span class="op">,</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a>      dataStandardDeviation</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a>    )</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a>  tensors<span class="op">.</span><span class="at">testFeatures</span> <span class="op">=</span> </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a>    normalization<span class="op">.</span><span class="fu">normalizeTensor</span>(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a>      tensors<span class="op">.</span><span class="at">rawTestFeatures</span><span class="op">,</span> </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a>      dataMean<span class="op">,</span> </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true"></a>      dataStandardDeviation</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true"></a>    )</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true"></a>}</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">linearRegressionModel</span>() {</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true"></a>    <span class="kw">const</span><span class="op">.</span><span class="at">model</span> <span class="op">=</span> tf<span class="op">.</span><span class="fu">sequential</span>()<span class="op">;</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true"></a>    model<span class="op">.</span><span class="fu">add</span>(tf<span class="op">.</span><span class="at">layers</span><span class="op">.</span><span class="fu">dense</span>({<span class="dt">inputShap</span><span class="op">:</span> [bostonData<span class="op">.</span><span class="at">numFeatures</span>]<span class="op">,</span> <span class="dt">units</span><span class="op">:</span> <span class="dv">1</span>}))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true"></a>    model<span class="op">.</span><span class="fu">summary</span>()</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true"></a>    <span class="cf">return</span> model<span class="op">;</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true"></a>}</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true"></a> </span></code></pre></div>
+<p>Now we must specify the loss function and optimizer before we begin training the data with a call to <code>model.compile()</code> ### 202004021821</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">function</span> <span class="fu">run</span> (model<span class="op">,</span> modelName<span class="op">,</span> weightsIllustration) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>  model<span class="op">.</span><span class="fu">compile</span>({</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>    <span class="dt">optimizer</span><span class="op">:</span> tf<span class="op">.</span><span class="at">train</span><span class="op">.</span><span class="fu">sgd</span>(LEARNING_RATE)<span class="op">,</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>    <span class="dt">loss</span><span class="op">:</span> <span class="st">'meanSquaredError'</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>  })</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a>  <span class="kw">let</span> trainLogs <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>  <span class="kw">const</span> container <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="vs">`#</span><span class="sc">${</span>modelName<span class="sc">}</span><span class="vs"> .chart`</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a>  ui<span class="op">.</span><span class="fu">updateStatus</span>(<span class="vs">`  * Starting Training Process: </span><span class="sc">${</span><span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toISOString</span>()<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a>  <span class="cf">await</span> model<span class="op">.</span><span class="fu">fit</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true"></a>    tensors<span class="op">.</span><span class="at">trainFeatures</span><span class="op">,</span> </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true"></a>    tensors<span class="op">.</span><span class="at">trainTarget</span><span class="op">,</span> </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true"></a>    { <span class="dt">batchSize</span><span class="op">:</span> BATCH_SIZE<span class="op">,</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true"></a>      <span class="dt">epochs</span><span class="op">:</span> NUM_EPOCHS<span class="op">,</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true"></a>      <span class="dt">validationSplit</span><span class="op">:</span> <span class="fl">0.2</span><span class="op">,</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true"></a>      <span class="dt">callbacks</span><span class="op">:</span> {</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true"></a>        <span class="dt">onEpochEnd</span><span class="op">:</span> <span class="kw">async</span> (epoch<span class="op">,</span> logs) <span class="kw">=&gt;</span> {</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true"></a>          <span class="cf">await</span> ui<span class="op">.</span><span class="fu">updateStatus</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true"></a>            <span class="vs">`  * Epoch </span><span class="sc">${</span>epoch <span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="vs"> of </span><span class="sc">${</span>NUM_EPOCHS<span class="sc">}</span><span class="vs"> completed`</span><span class="op">,</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true"></a>            modelName</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true"></a>          )</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true"></a>          trainLogs<span class="op">.</span><span class="fu">push</span>(logs)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true"></a>          tfviz<span class="op">.</span><span class="at">show</span><span class="op">.</span><span class="fu">history</span>(container<span class="op">,</span> trainLogs<span class="op">,</span> [<span class="st">'loss'</span><span class="op">,</span> <span class="st">'val_loss'</span>])</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true"></a>          <span class="cf">if</span> (weightsIllustration) {</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true"></a>            model<span class="op">.</span><span class="at">layers</span>[<span class="dv">0</span>]<span class="op">.</span><span class="fu">getWeights</span>()[<span class="dv">0</span>]<span class="op">.</span><span class="fu">data</span>()<span class="op">.</span><span class="fu">then</span>(kernelAsArray <span class="kw">=&gt;</span> {</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true"></a>              <span class="kw">const</span> weightsList <span class="op">=</span> <span class="fu">describeKernelElements</span>(kernelAsArray)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true"></a>              ui<span class="op">.</span><span class="fu">updateWeightDescription</span>(weightsList)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a>            })</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a>          }</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a>        }</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a>      }</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a>    }</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a>    ui<span class="op">.</span><span class="fu">updateStatus</span>(<span class="st">'Running on test data...'</span>)<span class="op">;</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true"></a>    <span class="kw">const</span> result <span class="op">=</span> model<span class="op">.</span><span class="fu">evaluate</span>(</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true"></a>        tensors<span class="op">.</span><span class="at">testFeatures</span><span class="op">,</span> tensors<span class="op">.</span><span class="at">testTarget</span><span class="op">,</span> {<span class="dt">batchSize</span><span class="op">:</span> BATCH_SIZE})<span class="op">;</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true"></a>    <span class="kw">const</span> testLoss <span class="op">=</span> result<span class="op">.</span><span class="fu">dataSync</span>()[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true"></a>    <span class="kw">const</span> trainLoss <span class="op">=</span> trainLogs[trainLogs<span class="op">.</span><span class="at">length</span> <span class="op">-</span> <span class="dv">1</span>]<span class="op">.</span><span class="at">loss</span><span class="op">;</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true"></a>    <span class="kw">const</span> valLoss <span class="op">=</span> trainLogs[trainLogs<span class="op">.</span><span class="at">length</span> <span class="op">-</span> <span class="dv">1</span>]<span class="op">.</span><span class="at">val_loss</span><span class="op">;</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true"></a>    <span class="cf">await</span> ui<span class="op">.</span><span class="fu">updateModelStatus</span>(</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true"></a>            <span class="vs">`Final train-set loss: </span><span class="sc">${</span>trainLoss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">4</span>)<span class="sc">}\n</span><span class="vs">`</span> <span class="op">+</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true"></a>            <span class="vs">`Final validation-set loss: </span><span class="sc">${</span>valLoss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">4</span>)<span class="sc">}\n</span><span class="vs">`</span> <span class="op">+</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true"></a>            <span class="vs">`Test-set loss: </span><span class="sc">${</span>testLoss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">4</span>)<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true"></a>        modelName)<span class="op">;</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true"></a>  }</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true"></a>)</span></code></pre></div>
+<ul>
+<li><em><strong>Training Data</strong></em> → For fitting the model weights with gradient descent.
+<ul>
+<li><code>Usage in TensorFlow.js:</code> Typically training data is used as the <code>x</code> and <code>y</code> parameters in the call to <code>js     Model.fit(x, y, config)</code></li>
+</ul></li>
+<li><em><strong>Validation Data</strong></em> → For selecting model structure and hyperparameters
+<ul>
+<li><code>Usage in TensorFlow.js:</code> The fit function has two ways of specifyin validation data in the config object as shown above
+<ul>
+<li>validationData: use this if you have your own validation data</li>
+<li>validationSplit: use this if you want some test data to be split out into a validation set</li>
+</ul></li>
+</ul></li>
+<li><em><strong>Testing Data</strong></em> → For final unbiased estimate of model performance
+<ul>
+<li><p><code>Usage in TensorFlow.js:</code> data is used as the <code>x</code> and <code>y</code> parameters in the call to</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>Model<span class="op">.</span><span class="fu">evaluate</span>(x<span class="op">,</span> y<span class="op">,</span> config)</span></code></pre></div></li>
+</ul></li>
+</ul>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

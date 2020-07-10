@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 2.2-2.3.2</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 2.2-2.3.2</h1>
+        <article>
+    <section class="header">
+        Posted on March 29, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter two of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<p><AnchorLinks> <AnchorLink>2.2 Inside Model.fit() – Disecting Stochastic Gradient Descent</AnchorLink> <AnchorLink>2.2.1 Intuitions Behind Gradient Descent Optimization</AnchorLink> <AnchorLink>2.2.2 Backpropogation: inside stochastic gradient descent</AnchorLink> <AnchorLink>2.3 Linear Regression With Multiple Input Features</AnchorLink> <AnchorLink>2.3.1 Boston Housing Prices</AnchorLink> <AnchorLink>2.3.2 Getting and Running the Boston Housing Project Data from Github</AnchorLink> </AnchorLinks></p>
+<h2 id="inside-model.fit-disecting-stochastic-gradient-descent">2.2 Inside Model.fit() – Disecting Stochastic Gradient Descent</h2>
+<p><InlineNotification></p>
+<p><strong>Goals</strong></p>
+<p>Understand what’s going on in TensorFlow.js’s</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="op">&gt;</span> model<span class="op">.</span><span class="fu">fit</span>()</span></code></pre></div>
+<p></InlineNotification></p>
+<h3 id="intuitions-behind-gradient-descent-optimization">2.2.1 Intuitions Behind Gradient Descent Optimization</h3>
+<p>A process called <em>random initialization</em> helps set the weights of the dense layer of the function we used in the previous example…</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>y <span class="op">=</span> m <span class="op">*</span> x <span class="op">+</span> b</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="co">/* or... */</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>output <span class="op">=</span> kernel <span class="op">*</span> sizeMb <span class="op">+</span> bias</span></code></pre></div>
+<p>Here kernel and bias are tunable weights. The loss with parameters close to the slope and y-intercept will be small and as the values move away from these goals the loss function will increase.</p>
+<p>This loss as a function of all tunable params is also referred to as a <em>loss surface</em>.</p>
+<p>https://codepen.io/tfjs-book/pen/JmerMM</p>
+<p>The 2D contour plot demonstrates this loss surface since our model has only two params. Each training loop we receive a feedback signal which adjusts parameters to find a better fit or move closer to the bottom of the loss surface..</p>
+<p>THis process has some distinct steps. - Draw a batch of trsaining samples x. these have corresponding targets <code>y_true</code> - the batch size is often a power of 2 in order to leverage a GPUs architecture for processing. - this also makes the calculated values more stable - Run the network on x called a <em>forward pass</em> to obtain predictions <code>y_pred</code> - Compute the loss of the network on the batch.. or the difference between y_true and y_pred as specified by the loss function. - the loss function is specified when <code>loss.compile()</code> is called. - Then update all parameters/weights so that this batch has a reduction in the output of thee loss function. - this is done by the optimizer option in compile.</p>
+<p>The optimizer has a difficult job, but because all operations are differentiable we can use gradient of the loss in order to determine which params/weights should be adjusted.</p>
+<p>A gradient is a direction in which moving the parameters reduced the loss function. The mathematical definition defines the gradient as the direction in which the loss increases so in the context of deep learning we want to create the opposite.</p>
+<p>The stochastic in SGD just means we pick random samples from the training step for efficiency</p>
+<h3 id="backpropogation-inside-stochastic-gradient-descent">2.2.2 Backpropogation: inside stochastic gradient descent</h3>
+<p>The algorithm for computing gradients in gradient descent is called backpropogation. The relationshipt between loss v x and y’ can be expressed as <code>loss = square(y' - y) = square(v * x - y)</code> Backpropogation has the important step of determining…</p>
+<blockquote>
+<p>Assuming everything else stays the same, how much change in the loss value will we get if <code>v</code> is increased by a unit amount?</p>
+</blockquote>
+<p>The gradient is computed step by step.. from loss value back to the value v. - step one is to make the point that a unit increase in loss corresponds to to a unit increase in loss itself. - the derivative of edge 3 gives us a value of -10 this is the amount of increase in loss we’ll get if edge 3 is increased by 1. - this is referred to as the chain rule. - At edge 2 we calculate the gradient of edge 3 with respect to edge 2. The gradient is 1 because this is a simple add operation.Multiplying this 1 with the value on edge 3 gives the gradient on edge 2 which is just -10 - at edge 1 the gradient of edge 2 with respect to edge 1 is <code>x</code> or <code>2</code>. We calculate the final gradient as <code>x * v</code> or <code>2 * -10 = -20</code></p>
+<h2 id="linear-regression-with-multiple-input-features">2.3 Linear Regression With Multiple Input Features</h2>
+<p><InlineNotification></p>
+<p><strong>Goals</strong></p>
+<ul>
+<li>Understand an learn how to build a model that takes in and learns from multiple input features</li>
+<li>Use yarn git and a standard javascript project to structure and build and run a web app with machine learning</li>
+<li>Know how to normalize data to stabilize the learning process</li>
+<li>Get a feel for using <code>tf.Model.fit()</code> to update the ui</li>
+</ul>
+<p></InlineNotification></p>
+<h3 id="boston-housing-prices">2.3.1 Boston Housing Prices</h3>
+<p>This particular dataset has been used since the 70s to ntroduce problems of statistics and morerecently deep learning. We’ll use the features in this dataset in order to get a median home price based solely on information about the home.</p>
+<h3 id="getting-and-running-the-boston-housing-project-data-from-github">2.3.2 Getting and Running the Boston Housing Project Data from Github</h3>
+<p>Examples can be downloaded from</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/tensorflow/tfjs-examples.git</span></code></pre></div>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

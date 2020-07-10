@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 2.1.3</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 2.1.3</h1>
+        <article>
+    <section class="header">
+        Posted on March 28, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter two of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<p><AnchorLinks> <AnchorLink>2.1.3 Creating and Formattiong the Data</AnchorLink> <AnchorLink>2.1.4 Defining a Simple Model</AnchorLink> <AnchorLink>2.1.5 Fitting the Model to the Training Data</AnchorLink> </AnchorLinks></p>
+<p><InlineNotification></p>
+<p><strong>Goals</strong></p>
+<p>Cover tensors, modeling, and optimization what they are and how thework and how to use them appropriately.</p>
+<p></InlineNotification></p>
+<h3 id="creating-and-formatting-the-data">2.1.3 Creating and Formatting the Data</h3>
+<p>Below are the steps to take in order to accept a file size and output an accurate prediction of download time. There is a one to one correspondance between the emlements in the two variables <code>timeSec</code> and <code>sizeMb</code> this allows a prediction to be made based on a sizeMb entry. There are two sets of this data <code>trainData</code> and <code>testData</code>, the first contains the training data and test data contains the _example_s with test data. They are so that the algorithm looks at new data when making a prediction. The output is called a <em>target</em>. The input is called <em>features</em>. This example has exactly one <em>feature</em> <code>sizeMb</code>, and one <em>target</em> <code>timeSec</code>. The goal is to train the model so that the future inputs are able to be used by the model to accurately predict download time.</p>
+<h5 id="workflow">Workflow</h5>
+<p>Train a neural network to make accurate predictions of <code>timeSec</code> given <code>sizeMb</code>.</p>
+<h6 id="convert-javascript-data-structures-into-tensors-or-the-format-that-tensorflow.js-understands.">Convert JavaScript data structures into tensors or the format that TensorFlow.js understands.</h6>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>    </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">const</span> trainData <span class="op">=</span> {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>  <span class="dt">sizeMB</span><span class="op">:</span>  [<span class="fl">0.080</span><span class="op">,</span> <span class="fl">9.000</span><span class="op">,</span> <span class="fl">0.001</span><span class="op">,</span> <span class="fl">0.100</span><span class="op">,</span> <span class="fl">8.000</span><span class="op">,</span> <span class="fl">5.000</span><span class="op">,</span> <span class="fl">0.100</span><span class="op">,</span> <span class="fl">6.000</span><span class="op">,</span> <span class="fl">0.050</span><span class="op">,</span> <span class="fl">0.500</span><span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>        <span class="fl">0.002</span><span class="op">,</span> <span class="fl">2.000</span><span class="op">,</span> <span class="fl">0.005</span><span class="op">,</span> <span class="fl">10.00</span><span class="op">,</span> <span class="fl">0.010</span><span class="op">,</span> <span class="fl">7.000</span><span class="op">,</span> <span class="fl">6.000</span><span class="op">,</span> <span class="fl">5.000</span><span class="op">,</span> <span class="fl">1.000</span><span class="op">,</span> <span class="fl">1.000</span>]<span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>  <span class="dt">timeSec</span><span class="op">:</span> [<span class="fl">0.135</span><span class="op">,</span> <span class="fl">0.739</span><span class="op">,</span> <span class="fl">0.067</span><span class="op">,</span> <span class="fl">0.126</span><span class="op">,</span> <span class="fl">0.646</span><span class="op">,</span> <span class="fl">0.435</span><span class="op">,</span> <span class="fl">0.069</span><span class="op">,</span> <span class="fl">0.497</span><span class="op">,</span> <span class="fl">0.068</span><span class="op">,</span> <span class="fl">0.116</span><span class="op">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>        <span class="fl">0.070</span><span class="op">,</span> <span class="fl">0.289</span><span class="op">,</span> <span class="fl">0.076</span><span class="op">,</span> <span class="fl">0.744</span><span class="op">,</span> <span class="fl">0.083</span><span class="op">,</span> <span class="fl">0.560</span><span class="op">,</span> <span class="fl">0.480</span><span class="op">,</span> <span class="fl">0.399</span><span class="op">,</span> <span class="fl">0.153</span><span class="op">,</span> <span class="fl">0.149</span>]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>}<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="kw">const</span> testData <span class="op">=</span> {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>  <span class="dt">sizeMB</span><span class="op">:</span>  [<span class="fl">5.000</span><span class="op">,</span> <span class="fl">0.200</span><span class="op">,</span> <span class="fl">0.001</span><span class="op">,</span> <span class="fl">9.000</span><span class="op">,</span> <span class="fl">0.002</span><span class="op">,</span> <span class="fl">0.020</span><span class="op">,</span> <span class="fl">0.008</span><span class="op">,</span> <span class="fl">4.000</span><span class="op">,</span> <span class="fl">0.001</span><span class="op">,</span> <span class="fl">1.000</span><span class="op">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>            <span class="fl">0.005</span><span class="op">,</span> <span class="fl">0.080</span><span class="op">,</span> <span class="fl">0.800</span><span class="op">,</span> <span class="fl">0.200</span><span class="op">,</span> <span class="fl">0.050</span><span class="op">,</span> <span class="fl">7.000</span><span class="op">,</span> <span class="fl">0.005</span><span class="op">,</span> <span class="fl">0.002</span><span class="op">,</span> <span class="fl">8.000</span><span class="op">,</span> <span class="fl">0.008</span>]<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>  <span class="dt">timeSec</span><span class="op">:</span> [<span class="fl">0.425</span><span class="op">,</span> <span class="fl">0.098</span><span class="op">,</span> <span class="fl">0.052</span><span class="op">,</span> <span class="fl">0.686</span><span class="op">,</span> <span class="fl">0.066</span><span class="op">,</span> <span class="fl">0.078</span><span class="op">,</span> <span class="fl">0.070</span><span class="op">,</span> <span class="fl">0.375</span><span class="op">,</span> <span class="fl">0.058</span><span class="op">,</span> <span class="fl">0.136</span><span class="op">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>            <span class="fl">0.052</span><span class="op">,</span> <span class="fl">0.063</span><span class="op">,</span> <span class="fl">0.183</span><span class="op">,</span> <span class="fl">0.087</span><span class="op">,</span> <span class="fl">0.066</span><span class="op">,</span> <span class="fl">0.558</span><span class="op">,</span> <span class="fl">0.066</span><span class="op">,</span> <span class="fl">0.068</span><span class="op">,</span> <span class="fl">0.610</span><span class="op">,</span> <span class="fl">0.057</span>]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>}<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>trainXs <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(trainData<span class="op">.</span><span class="at">sizeMB</span><span class="op">,</span> [<span class="dv">20</span><span class="op">,</span> <span class="dv">1</span>])<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>trainYs <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(trainData<span class="op">.</span><span class="at">timeSec</span><span class="op">,</span> [<span class="dv">20</span><span class="op">,</span> <span class="dv">1</span>])<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a>testXs <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(testData<span class="op">.</span><span class="at">sizeMB</span><span class="op">,</span> [<span class="dv">20</span><span class="op">,</span> <span class="dv">1</span>])<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a>testYs <span class="op">=</span> tf<span class="op">.</span><span class="fu">tensor2d</span>(testData<span class="op">.</span><span class="at">timeSec</span><span class="op">,</span> [<span class="dv">20</span><span class="op">,</span> <span class="dv">1</span>])<span class="op">;</span></span></code></pre></div>
+<p>Tensors are a generalization of matrices to an arbitrary number of dimensions. The number of dimensions and size of each dimension is called its <em>shape</em>. In the context of tensors a dimension is often called an <em>axis</em>.</p>
+<h6 id="produce-predictions-from-the-test-set">Produce predictions from the test set</h6>
+<h6 id="measure-how-close-those-predictions-are-to-the-target-for-the-test-data">Measure how close those predictions are to the target for the test data</h6>
+<h3 id="defining-a-simple-model">2.1.4 Defining a Simple Model</h3>
+<p>In the context of deep learning the function from input features to targets is called a <em>model</em>. Sometimes the word <em>network</em> is used in place of the word <em>model</em>. This model will be an implementation of linear regression.</p>
+<p><em>Regression</em> in machine-learning means the model will output real valued numbers by attempting to match the training numbers. This is in contrast to <em>classification</em> in which outputs choices from a set of options.</p>
+<p>Linear regression is a specific type of model whose output as a function of input is illustrated a a straight line. An important property of models is that they are tunable.. This means the input output computation can be adjusted. Because it’s linear it’s always the case that it is a straight line however the slope and y-intercept can be adjusted to better fit the relationship.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">const</span> model <span class="op">=</span> tf<span class="op">.</span><span class="fu">sequential</span>()<span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>model<span class="op">.</span><span class="fu">add</span>(tf<span class="op">.</span><span class="at">layers</span><span class="op">.</span><span class="fu">dense</span>({<span class="dt">inputShape</span><span class="op">:</span> [<span class="dv">1</span>]<span class="op">,</span> <span class="dt">units</span><span class="op">:</span><span class="dv">1</span>}))</span></code></pre></div>
+<blockquote>
+<p>The core building block of a neural network is the layer</p>
+</blockquote>
+<p>This means a layer is a data processing module that is a tunable function from tensor to tensor. The network consists of a single dense layer. At its core the dense layer is a tunable multiply add function. The layer in the example above has a constraint on the input layer as defined by the parameter <code>inputShape</code>. This means it expects a 1D tensor with exactly one value. The output is always a 1D tensor for each example and the size of that dimension is set by the <code>units</code> parameter. We only want one number because we are trying to predict one number <code>timeSec</code>. Th linear model is</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>y <span class="op">=</span> m <span class="op">*</span> x <span class="op">+</span> b</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="co">/* or... */</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>timeSec <span class="op">=</span> kernel <span class="op">*</span> sizeMb <span class="op">+</span> bias</span></code></pre></div>
+<p>For the training data the variables timeSec and sizeMb are fixed. The kernel and bias are the models parameters and are chosen randomly. This will not produce results desired instead the search for these values or <em>weights</em> is called the training process has to learn form the data in order to acheive the results.</p>
+<p>To find a good setting for kernel and bias we need two values: - A measure that tells us how well a given set of weights perform - A method that updates the current weights so that next time the model performs better according to the measure above.</p>
+<p>In order to make the network ready for training we need to pick a measure and update method. In TensorFlow.js this is called the model compilation step. This step accepts as <em>Loss function</em> which measures errror in the network. A lower value in the loss function is better and allows movement towards the best <em>fit</em>. In general we should be able to plot the loss over time and see it decreasing. If the model trains for a long time and does not decreasee the loss it means the model is not learning to fit the data.</p>
+<p>The optimizer or the algorithm by which the network updates its weights based on the data and the loss function.</p>
+<h3 id="fitting-the-model-to-the-training-data">2.1.5 Fitting the Model to the Training Data</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>modelOutput <span class="op">=</span> [<span class="fl">1.1</span><span class="op">,</span> <span class="fl">2.2</span><span class="op">,</span> <span class="fl">3.3</span><span class="op">,</span> <span class="fl">3.6</span>]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>targets <span class="op">=</span>     [<span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">,</span> <span class="fl">4.0</span>]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>meanAbsoluteError <span class="op">=</span> <span class="fu">average</span>(<span class="fu">absolute</span>(modelOutput <span class="op">-</span> targets))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co">/* this gives  meanAbsoluteError = 0.25 */</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="co">/* or computed w/ tf.js lib */</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>tf<span class="op">.</span><span class="fu">mean</span>(tf<span class="op">.</span><span class="fu">abs</span>(tf<span class="op">.</span><span class="fu">sub</span>(testData<span class="op">.</span><span class="at">timeSec</span><span class="op">,</span> <span class="fl">0.295</span> <span class="op">||</span> tf<span class="op">.</span><span class="fu">mean</span>(testData<span class="op">.</span><span class="at">timeSec</span>))))<span class="op">.</span><span class="fu">print</span>()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>model<span class="op">.</span><span class="fu">compile</span>({<span class="dt">optimizer</span><span class="op">:</span> <span class="st">'sgd'</span><span class="op">,</span> <span class="dt">loss</span><span class="op">:</span> <span class="st">'meanAbsoluteErrror'</span>})</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a></span></code></pre></div>
+<p>SGD here stands for <em>stochastic gradient ddescent</em> which uses calculus to determine which adjustments we should make in order to reduce the loss. This process is repeated until the model is ready to be fit to the training data.</p>
+<p>Training a model is done by calling the model’s <code>fit()</code> method. We pass in our sizeMb as the input and get timeSecas output. We also specify <code>epochs</code> variable to tell the model we want to go through the training data 10 times. In deep learning the iteration through the complete training data is called an <em>epoch</em>.</p>
+<p>The <code>evaluate()</code> is similar to the <code>fit()</code> function however it doesn;t update the weights When providing test data to this function we are given the loss function value averaged across all the values. This is another way of saying it provides the mean average error. <a href="#2.1.5-fitting-the-model-to-the-training-data">Above we computed the mean absolute error by hand</a></p>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 3.1-3.2.1</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 3.1-3.2.1</h1>
+        <article>
+    <section class="header">
+        Posted on April  4, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter three of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<p><AnchorLinks> <AnchorLink>3.1 Nonlinearity Description and Utility</AnchorLink> <AnchorLink>3.1.1 Building the Intuition for Nonlinearity in Neural Networks</AnchorLink> <AnchorLink>3.1.2 Hyperparameters and Hyperparameter Optimization</AnchorLink> <AnchorLink>3.2 Nonlinear Output</AnchorLink> <AnchorLink>3.2.1 Binary Classification</AnchorLink> </AnchorLinks></p>
+<p><InlineNotification></p>
+<p><strong>Goals</strong></p>
+<ol type="1">
+<li>Nonlinearity enhances representational power of neural netwroks and in many cases improves prediction power.</li>
+<li>Understanding underfitting and overfitting in relationship to model training.</li>
+</ol>
+<p></InlineNotification></p>
+<h2 id="nonlinearity-description-and-utility">3.1 Nonlinearity Description and Utility</h2>
+<h6 id="definitions">Definitions</h6>
+<p>A neural network with two layers has a first layer that is call a <em>hidden layer</em> because its output is not directly seen from outside the model. The second layer then would be the <em>output layer</em> because it’s output is also the models final output using TensorFlow.js API method <code>predict()</code>.</p>
+<p>These can be referred to as a <em>multilayer perceptron</em> if: - They have a simple topology, called <em>feedforward neural networks</em> - They have a least one hidden layer</p>
+<h6 id="api">API</h6>
+<p>The call to <code>model.summary()</code> is a diagnostic/reporting tool that prints the topology of TensorFlow.js models to the console</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>model<span class="op">.</span><span class="fu">summary</span>()</span></code></pre></div>
+<ol type="1">
+<li>The first column is the layer name and type.</li>
+<li>The second column is the shape for each layer. The first dimension is almost always a null value which represents an undetermined and variable batch size.</li>
+<li>The third column is the number of weight parameters for each layer. This counts all of the individual numbers that make up a layer’s weights.
+<ol type="1">
+<li>A kernel shape of: <code>[12, 50]</code></li>
+<li>A bias of: <code>50</code></li>
+<li>Yields: <code>(12 * 50) + 50 = 650</code></li>
+</ol></li>
+<li>The total at the bottom includes all the weights of the model and which are trainable and which are untrainable.
+<ol type="1">
+<li>The trainable weights are updataed in the call to <code>js     model.fit()</code></li>
+</ol></li>
+</ol>
+<h3 id="building-the-intuition-for-nonlinearity-in-neural-networks">3.1.1 Building the Intuition for Nonlinearity in Neural Networks</h3>
+<p>An <em>activation function</em> is an element by element transform. The sigmoid function is a squashing function in that it squashes all real values into a much smaller space <code>0 to +1</code> - sigmoid activation function is a curve - relu activation function is the concatenation of two line segments</p>
+<h6 id="why-nonlinear">Why <em>Nonlinear</em></h6>
+<p>Both activation functions are smooth and differentiable which make backpropogation possible. The plot of the activation function is not a straight line.</p>
+<p><InlineNotification></p>
+<p><strong>Note</strong></p>
+<p>Hyperbolic tangent (<em>tanh</em>), relu and sigmoid are activation functions.</p>
+<p></InlineNotification> <br /></p>
+<h5 id="nonlinearity-and-model-capacity">Nonlinearity and Model Capacity</h5>
+<p>Nonliear functions allow our models to represent more diverse relationships between data. Replacing a linear function with a nonlinear function does not lose the ability to learn linear relationships. Adding a non linear layer adds to breadth an depth of input output relations it can learn..</p>
+<p>Neural networks can be thought of as cascading functions. Each layer can be viewed as a function the stacking of layersa mounts to cascading these functions to form a more complex function that is the network itself.</p>
+<p>The range of input output relations a machine learning algorithm is capable of learning is called its <em>capacity</em>. <!-- #capacity --></p>
+<h5 id="nonlinearity-and-model-interpretability">Nonlinearity and Model Interpretability</h5>
+<p>Does a nonlinear model with multiple layers still allow for interpretability? In general no. This is because there is no easily identifiable meaning to any of the 50 outputs from the hidden layer. Choosing a deep model over a shallow on is a tradeoff between interpretability and more model capacity</p>
+<h3 id="hyperparameters-and-hyperparameter-optimization">3.1.2 Hyperparameters and Hyperparameter Optimization</h3>
+<p>The proper configuration of a sigmoid layer also relies on - the number of units - the kernels <code>'leCunNormal'</code> initialization - this is distict from the default <code>'glorotNormal'</code> which uses size of input and output to create the random numbers - The number of dense layers in a model - Type of initializer - Whether to use any weight regularization and factor therein - _Inclusion of dropout layers*_ - _Number of epochs*_ - _Optimizer learning rate*_ - _Learning rate decrease*_ - _Batch size for training*_</p>
+<p>* <strong>These are model training configurations</strong></p>
+<!-- #leCunNormal a special way to create random numbers that go into the kernels initial value based on input size -->
+<blockquote>
+<p>Number of units, kernel initializers, optimizers and activation function are <em>hyperparameters</em></p>
+</blockquote>
+<!--#hyperparameters _kernel_ is slope or m
+  _units_ controls the size of the output's 1D tensor always a 1D tensor
+  -->
+<p>Hyperparameters do not change for a model during training. <strong><em>Hyperparameter optimization</em></strong> is the name of the process of selecting these values.</p>
+<p>Many Hyperparameters are discrete and therefore their loss value is not differentiable..</p>
+<h2 id="nonlinear-output">3.2 Nonlinear Output</h2>
+<p><InlineNotification></p>
+<p><strong>Binary vs Multiclass Classification</strong></p>
+<ul>
+<li>Binary Examples
+<ul>
+<li>spam email</li>
+<li>fraudulent charges</li>
+<li>whther a word is present in audio sample</li>
+<li>fingerprint matching</li>
+</ul></li>
+<li>Multiclass Examples
+<ul>
+<li>article topics</li>
+<li>image classification</li>
+<li>charachter recognition</li>
+<li>atari</li>
+</ul></li>
+</ul>
+<p></InlineNotification></p>
+<h2 id="binary-classification">3.2.1 Binary Classification</h2>
+<p>In the example regarding email phishing we use a sigmoid layer as the output layer as a way to express the probability that an email is spam.</p>
+<ul>
+<li><p>In this way we understand the support for or against with the probability.</p></li>
+<li><p>It’s also easier to come up with a differentiable loss funtion given the nature of the binary labels yes/no we are able to see by how much a model has missed the mark.</p></li>
+<li><p>The <code>adam</code> optimizer aims at addressing these shortcomings of zig zaging and slow convergence found in gradient descent by using a multiplication factor that varies with the history of the gradients.</p>
+<ul>
+<li>The <code>adam</code> optimizer usually depends less on the learning rate</li>
+<li><code>sgd</code>, <code>momentum</code>, <code>rmsprop</code>, <code>adadelta</code>, <code>adamax</code> are other optimizers</li>
+</ul></li>
+</ul>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

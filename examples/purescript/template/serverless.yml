@@ -1,0 +1,36 @@
+service: purescript-lambda
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-southeast-2
+  deploymentBucket: lwb-test-serverless-deploys
+
+package:
+  include:
+    - output/**
+
+functions:
+  basic:
+    handler: output/Basic.handler
+
+  event:
+    handler: output/Event.handler
+
+  simpleJson:
+    handler: output/SimpleJson.handler
+
+  s3EventSource:
+    handler: output/S3EventSource.handler
+    events:
+      - s3: lwb-test-purescript-lambda
+
+  restApi:
+    handler: output/RestApi.handler
+    events:
+      - http:
+          path: /
+          method: any
+      - http:
+          path: /{any+}
+          method: any

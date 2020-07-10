@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Haskell School of Music 1.7-1.9</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Haskell School of Music 1.7-1.9</h1>
+        <article>
+    <section class="header">
+        Posted on March 22, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription> These are some points of reference and notes from the book the haskell school of music chapter one. </PageDescription></p>
+<p><AnchorLinks> <AnchorLink>1.7 Abstraction³</AnchorLink> <AnchorLink>1.7.1 Naming</AnchorLink> <AnchorLink>1.7.2 Functional Abstraction</AnchorLink> <AnchorLink>1.7.3 Data Abstraction</AnchorLink> <AnchorLink>1.8 Haskell Equality vs. Musical Equality</AnchorLink> <AnchorLink>1.9 Code Reuse and Modularity</AnchorLink> </AnchorLinks></p>
+<h2 id="abstraction³">1.7 Abstraction³</h2>
+<p>The <em>abstraction principle</em> is the idea of separating patterns from the instances in which they appear.</p>
+<h3 id="naming">1.7.1 Naming</h3>
+<p>An example of abstraction and naming might be something like:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">pi</span><span class="ot"> ::</span> <span class="dt">Double</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="fu">pi</span> <span class="ot">=</span> <span class="fl">3.141592653589793</span></span></code></pre></div>
+<p>This allows changing the value in one place vs the many places it might appear i a program. In computer music a <em>pitch</em> consists of a <em>pitch class</em> and an <em>octave</em>. In Euterpea <em>“concert A”</em> is represented as</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>(<span class="dt">A</span>,<span class="dv">4</span>)</span></code></pre></div>
+<p>in music this represents the picth class A in the fourth octave. Defining this looks like:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>a440,<span class="ot"> concertA ::</span> (<span class="dt">PitchClass</span>, <span class="dt">Octave</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>a440     <span class="ot">=</span> (<span class="dt">A</span>,<span class="dv">4</span>) <span class="co">-- concert A</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>concertA <span class="ot">=</span> (<span class="dt">A</span>,<span class="dv">4</span>) <span class="co">-- A440</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="co">{- </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co">    As a note multi line comments in haskell look</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="co">    like this.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="co">-}</span></span></code></pre></div>
+<p>We can give several names to the same value in haskell which may help think about different representations of the data as in <a href="./posts/202003211701--deep-learning-with-javascript--1.1-1.3"><em><strong>Machine Learning</strong></em></a> <!--  [[202003211701--deep-learning-with-javascript--1.1-1.3]]  --></p>
+<p>A larger expression may require writing things more than once:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ot">x ::</span> <span class="dt">Float</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>x <span class="ot">=</span> f (<span class="fu">pi</span> <span class="op">*</span> r <span class="op">**</span> <span class="dv">2</span> ) <span class="op">+</span> g (<span class="fu">pi</span> <span class="op">*</span> r <span class="op">**</span> <span class="dv">2</span> )</span></code></pre></div>
+<p>We can abstract this in Haskell by using another expression</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="ot">area ::</span> <span class="dt">Float</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="ot">area ::</span> <span class="fu">pi</span> <span class="op">*</span> r <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="ot">x ::</span> <span class="dt">Float</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>x <span class="ot">=</span> f area <span class="op">+</span> g area</span></code></pre></div>
+<p>We can also limit areas scope using a let expression.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="ot">x ::</span> <span class="dt">Float</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>x <span class="ot">=</span> <span class="kw">let</span> area <span class="ot">=</span> <span class="fu">pi</span> <span class="op">*</span> r <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>    <span class="kw">in</span> f area <span class="op">+</span> g area</span></code></pre></div>
+<p>The name for expressions like the one above for <code>𝜋</code> is called a <em><strong>binding</strong></em>.</p>
+<h3 id="functional-abstraction">1.7.2 Functional Abstraction</h3>
+<p>If the original problem looked like:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="ot">x ::</span> <span class="dt">Float</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>x <span class="ot">=</span> f (<span class="fu">pi</span> <span class="op">*</span> r1 <span class="op">**</span> <span class="dv">2</span> ) <span class="op">+</span> g (<span class="fu">pi</span> <span class="op">*</span> r2 <span class="op">**</span> <span class="dv">2</span> )</span></code></pre></div>
+<p>we could stll abstract this to</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ot">x ::</span> <span class="dt">Float</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>x <span class="ot">=</span> <span class="kw">let</span> areaF r <span class="ot">=</span> <span class="fu">pi</span> <span class="op">*</span> r <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>    <span class="kw">in</span> f (areaF r1) <span class="op">+</span> g (areaF r2)</span></code></pre></div>
+<p>This is called functional abstraction.</p>
+<p>Now a bit of music theory. &gt; A <em>note</em> in Euterpea is defined as <em>pitch</em> combined with a <em>duration</em>.</p>
+<ul>
+<li><p>A <em>duration</em> is measured in beats.</p></li>
+<li><p>In Euterpea this has type</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="dt">Dur</span></span></code></pre></div></li>
+<li><p>One note with duration of 1 beat is called a <em>whole note</em></p></li>
+<li><p>One note with duration of ½ beat is called a <em>half note</em></p></li>
+<li><p>This is the smallest performable peace of music in Euterpe besides a rest</p></li>
+<li><p>Its type is <em>MusicPitch</em></p></li>
+<li><p>There functions typesignatures are as follows.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="ot">note ::</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> <span class="dt">Pitch</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>note d p <span class="ot">=</span> <span class="op">???</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a><span class="ot">rest ::</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>rest d <span class="ot">=</span> <span class="op">???</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="co">{-Example-}</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>note (<span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) (<span class="dt">A</span>,<span class="dv">4</span>) <span class="co">-- quarter note concert A</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>rest  <span class="dv">1</span> <span class="co">-- rest one beat</span></span></code></pre></div></li>
+<li><p>In Euterpea infix operators combine smalle music values into larger ones…</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="ot">(:+:) ::</span> <span class="dt">MusicPitch</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="ot">(:=:) ::</span> <span class="dt">MusicPitch</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>m1 <span class="op">:+:</span> m2 <span class="co">-- plays music pitch m1 and then m2</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>m1 <span class="op">:=:</span> m2 <span class="co">-- plays music pitch m1 and m2 simultaneously</span></span></code></pre></div></li>
+<li><p>Euterpea also has a function</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="ot">trans ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Pitch</span> <span class="ot">-&gt;</span> <span class="dt">Pitch</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>trans i p <span class="co">-- this is the pitch that is i semitones higher than p </span></span></code></pre></div></li>
+</ul>
+<h3 id="data-abstraction">1.7.3 Data Abstraction</h3>
+<p>Representing situations where the number of values is uncertain as a <em>data structure</em> is useful. To add a single element to the front of a list in haskell the following is used:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>x <span class="op">:</span> xs</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="dt">C</span> <span class="op">:</span> [<span class="dt">D</span>, <span class="dt">Ef</span>] <span class="op">==</span> [<span class="dt">C</span>, <span class="dt">D</span>, <span class="dt">Ef</span>] <span class="op">==</span> <span class="dt">C</span> <span class="op">:</span> <span class="dt">D</span> <span class="op">:</span> <span class="dt">Ef</span> <span class="op">:</span> [] </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a><span class="co">{- these are all valid ways of creating lists -}</span></span></code></pre></div>
+<p>for a harmonized list we can define a function <em>hList</em></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="ot">hList ::</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> [<span class="dt">Pitch</span>] <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span> <span class="co">-- type signature</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>hList [] <span class="ot">=</span> rest <span class="dv">0</span> <span class="co">-- MusicPitch with 0 duration </span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>hList d (p <span class="op">:</span> ps) <span class="ot">=</span> <span class="kw">let</span> hNote dp <span class="ot">=</span> note d p <span class="op">:=:</span> note d (trans (<span class="op">-</span><span class="dv">3</span>) p)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>                   <span class="kw">in</span> hNote d p <span class="op">+</span> hList d ps </span></code></pre></div>
+<p><strong>Exercise 1.4</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode hs"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="ot">mel ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> [<span class="dt">Pitch</span>] <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>mel <span class="ot">=</span>  <span class="kw">let</span><span class="ot"> hList ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> [<span class="dt">Pitch</span>] <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>                  hList i d [] <span class="ot">=</span> rest <span class="dv">0</span> <span class="co">-- MusicPitch with 0 duration </span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>                  hList i d (p<span class="op">:</span> ps) <span class="ot">=</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>                      <span class="kw">let</span><span class="ot"> hNote ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> <span class="dt">Pitch</span> <span class="ot">-&gt;</span> <span class="dt">MusicPitch</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>                          hNote <span class="ot">=</span> i d p <span class="ot">=</span> note d p <span class="op">:=:</span> note d (trans i p)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a>                               <span class="kw">in</span> hNote i d p <span class="op">:+:</span> hList i d ps</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>              <span class="kw">in</span> hList i d l</span></code></pre></div>
+<h3 id="haskell-equality-vs.-musical-equality">1.8 Haskell Equality vs. Musical Equality</h3>
+<p>Euterpea formally defines <em>musical interpretation</em> so that the difference of adding a <code>MusicPitch</code> with duration 0 is not different from A <code>MusicPitch</code> without.. this leads to the axiom:</p>
+<pre class="katex"><code>m :+: rest 0 ≡ m</code></pre>
+<h2 id="code-reuse-and-modularity">1.9 Code Reuse and Modularity</h2>
+<p>Replacing code with smaller abstractions allows us to reuse code and simplify implementation even though this may require more code it is still clearer than the single use of an expression.</p>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Haskell School of Music 2.1-2.2</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Haskell School of Music 2.1-2.2</h1>
+        <article>
+    <section class="header">
+        Posted on April 18, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription> These are some points of reference and notes from the book the haskell school of music chapter two. </PageDescription></p>
+<p><AnchorLinks> <AnchorLink>2.2 Notes, Music, and Polymorphism</AnchorLink> <AnchorLink>2.3 Convenient Auxiliary Functions</AnchorLink> <AnchorLink>2.3.1 Example</AnchorLink> </AnchorLinks></p>
+<h2 id="notes-music-and-polymorphism">2.2 Notes, Music, and Polymorphism</h2>
+<ul>
+<li>Constructing musical values as recursive data types allows us to deconstruct them print their structure and analyze them in a structure preserving way.</li>
+<li><code>Control</code> is used by the <code>Modify</code> constructor to annotate a <code>Music</code> value with a:
+<ul>
+<li><em>tempo change</em></li>
+<li><em>transposition</em></li>
+<li><em>phase attribute</em></li>
+<li><em>instrument</em></li>
+<li><em>key signature</em></li>
+<li><em>custom label</em></li>
+</ul></li>
+<li><code>AbsPitch</code> is a type synonym for <code>Int</code></li>
+<li><code>KeySig</code> constructors attach a <em>key signature</em> to a <code>Music</code> vlue
+<ul>
+<li><em>this is different from transposition</em></li>
+</ul></li>
+</ul>
+<h2 id="convenient-auxiliary-functions">2.3 Convenient Auxiliary Functions</h2>
+<p>The following are defined in Euterpea for convenience</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="ot">note ::</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Music</span> a</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>note d p <span class="ot">=</span> <span class="dt">Prim</span> (<span class="dt">Note</span> d p)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="ot">rest ::</span> <span class="dt">Dur</span> <span class="dt">Music</span> a</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>rest d <span class="ot">=</span> <span class="dt">Prim</span> (<span class="dt">Rest</span> d)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="ot">tempo ::</span> <span class="dt">Dur</span> <span class="ot">-&gt;</span> <span class="dt">Music</span> a <span class="ot">-&gt;</span> <span class="dt">Music</span> a</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>tempo r m <span class="ot">=</span> <span class="dt">Modify</span> (<span class="dt">Tempo</span> r) m</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="ot">transpose ::</span> <span class="dt">AbsPitch</span> <span class="ot">-&gt;</span> <span class="dt">Music</span> a <span class="ot">-&gt;</span> <span class="dt">Music</span> a</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>transpose i m <span class="ot">=</span> <span class="dt">Modify</span> (<span class="dt">Transpose</span> i) m </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a><span class="ot">instrument ::</span> <span class="dt">InstrumentName</span> <span class="ot">-&gt;</span> <span class="dt">Music</span> a <span class="ot">-&gt;</span> <span class="dt">Music</span> a</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>instrument i m <span class="ot">=</span> <span class="dt">Modify</span> (<span class="dt">Instrument</span> i) m</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a><span class="ot">phrase ::</span> [<span class="dt">PhraseAttribute</span>] <span class="ot">-&gt;</span> <span class="dt">Music</span> a <span class="ot">-&gt;</span> <span class="dt">Music</span> a</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a>phrase pa m <span class="ot">=</span> <span class="dt">Modify</span> (<span class="dt">Phrase</span> pa) m</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a> </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a><span class="ot">keysig ::</span> <span class="dt">PitchClass</span> <span class="ot">-&gt;</span> <span class="dt">Mode</span> <span class="ot">-&gt;</span> <span class="dt">Music</span> a <span class="ot">-&gt;</span> <span class="dt">Music</span> a     </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>keysig pc mo m <span class="ot">=</span> <span class="dt">Modify</span>(<span class="dt">KeySig</span> pc mo) m </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a> </span></code></pre></div>
+<h3 id="example">2.3.1 Example</h3>
+<p><em><strong>A ii-V-I chord progression in a particular major key can be created by:</strong></em> - arranging a minor chord on the second degree of the major scale - followed by a major chord on the fifth degree - ending in a major chord on the first degree</p>
+<p><strong>This is expressed in haskell as </strong> <br />                                                           <b>⬇︎</b></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="ot">t251 ::</span> <span class="dt">Music</span> <span class="dt">Pitch</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>t251 <span class="ot">=</span> <span class="kw">let</span> dMinor <span class="ot">=</span> d <span class="dv">4</span> wn <span class="op">:=:</span> f <span class="dv">4</span> wn <span class="op">:=:</span> a <span class="dv">4</span> wn</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>           gMajor <span class="ot">=</span> g <span class="dv">4</span> wn <span class="op">:=:</span> b <span class="dv">4</span> wn <span class="op">:=:</span> d <span class="dv">5</span> wn</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>           cMajor <span class="ot">=</span> c <span class="dv">4</span> bn <span class="op">:=:</span> e <span class="dv">4</span> bn <span class="op">:=:</span> g <span class="dv">4</span> bn</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>       <span class="kw">in</span> dMinor <span class="op">:+:</span> gMajor <span class="op">:+:</span> cMajor </span></code></pre></div>
+<p><strong>We can play this progression with the play function in <em>GHCi</em></strong> <br />                                                                                                                   <b>⬇︎</b></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="op">&gt;</span> play t251</span></code></pre></div>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 2.4-2.4.3</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 2.4-2.4.3</h1>
+        <article>
+    <section class="header">
+        Posted on April  2, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter two of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<p><AnchorLinks> <AnchorLink>2.4 How to Interpret Your Model</AnchorLink> <AnchorLink>2.4.1 Extracting Meaning from Learned Weights</AnchorLink> <AnchorLink>2.4.2 Extracting Internal Weights from the Model</AnchorLink> <AnchorLink>2.4.3 Caveats to Interpretability</AnchorLink> </AnchorLinks></p>
+<h2 id="how-to-interpret-your-model">2.4 How to Interpret Your Model</h2>
+<p><InlineNotification></p>
+<p><strong>Goals</strong></p>
+<ol type="1">
+<li>Extract learned weights from a model</li>
+<li>Interpret thos weights to weigh them against what one might think they should be</li>
+</ol>
+<p></InlineNotification></p>
+<h3 id="extracting-meaning-from-learned-weights">2.4.1 Extracting Meaning from Learned Weights</h3>
+<p>The linear function example was <em>scalar</em> however the features and the kernel here are both vectors Here we are taking the <em>dot product</em> of the two vectors.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>output <span class="ot">=</span> kernel · features <span class="op">+</span> bias</span></code></pre></div>
+<p>This basically amounts to a relationship between the kernel and the features, where small learned values are learned to have little impact and and positive relationships increase predicted output and negative relationships decrease predicted output.</p>
+<h3 id="extracting-internal-weights-from-the-model">2.4.2 Extracting Internal Weights from the Model</h3>
+<p>Since this model has only one layer we can grab the output layer with the following</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="op">&gt;</span> model<span class="op">.</span><span class="at">layers</span>[<span class="dv">0</span>]</span></code></pre></div>
+<p>Then we get the weights with the <code>getWeights()</code> since we’re using a dense layer the returned array of weights will always have two elements the kernel and the bias..</p>
+<p>We can access the tensor we’re interested in with</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="op">&gt;</span> model<span class="op">.</span><span class="at">layers</span>[<span class="dv">0</span>]<span class="op">.</span><span class="fu">getWeights</span>()[<span class="dv">0</span>]</span></code></pre></div>
+<p>We can access the contents of the tensor with a call to the <code>data()</code> function since its an async function we use the promised value as in the <a href="./posts/202004010823--deep-learning-with-javascript-2.3.3--2.3.6#202004021821">previous post</a> marked as <code>kernelAsArray</code></p>
+<h3 id="caveats-to-interpretability">2.4.3 Caveats to Interpretability</h3>
+<p>If weights are different in a model for a feature that is included twice they can be switched around so we cannot say very much about this feature. Correlation and causality must also be looked at carefully in order to avoid mistakes when making statements about features relationships to outputs…</p>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

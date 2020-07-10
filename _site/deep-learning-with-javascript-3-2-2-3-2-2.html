@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 3.2.2-3.2.2</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 3.2.2-3.2.2</h1>
+        <article>
+    <section class="header">
+        Posted on April 10, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter three of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<h3 id="precision-recall-accuracy-and-roc-curves-of-binary-classification">3.2.2 Precision Recall Accuracy and ROC Curves of Binary Classification</h3>
+<p><InlineNotification></p>
+<p><strong>Confusion Matrix</strong></p>
+</InlineNotification>
+<div class="bx--col-md-6 bx--col-lg-8">
+<section id="key" class="bx--row">
+<h5>Key ↘︎</h5>
+</section>
+<div class="bx--row">
+<table>
+<thead>
+<tr class="header">
+<th>The four result types<br /> in classification</th>
+<th></th>
+<th>prediction</th>
+<th>prediction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>positive</td>
+<td>negative</td>
+</tr>
+<tr class="even">
+<td>truth</td>
+<td>positive</td>
+<td>true positive</td>
+<td>false negative</td>
+</tr>
+<tr class="odd">
+<td>truth</td>
+<td>negative</td>
+<td>false positive</td>
+<td>true negative</td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="example" class="bx--row">
+<h5>Example ↘︎</h5>
+</section>
+<div class="bx--row">
+<table>
+<thead>
+<tr class="header">
+<th>The four result types<br /> in classification</th>
+<th></th>
+<th>prediction</th>
+<th>prediction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>positive</td>
+<td>negative</td>
+</tr>
+<tr class="even">
+<td>truth</td>
+<td>positive</td>
+<td>30</td>
+<td>28</td>
+</tr>
+<tr class="odd">
+<td>truth</td>
+<td>negative</td>
+<td>40</td>
+<td>02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><InlineNotification kind="{"error"}"></p>
+<p><strong>Accuracy</strong></p>
+<p><br /></p>
+<p><em>We can understand accuracy from the table above as the in the following steps:</em></p>
+<p><br /></p>
+<ul>
+<li><code>(30 + 02)/(30 + 02 + 40 + 28)</code></li>
+<li><code>(32)/(100)</code></li>
+<li><code>0.32</code></li>
+<li><code>32.00%</code></li>
+</ul>
+<p></InlineNotification></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co">/** </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="co">Accuracy: </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="co">=&gt; ((#TP + #TN) / (#examples)) </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="co">=&gt; ((#TP + #TN) / (#TP + #TN + #FP + #FN))</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="co">**/</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="op">;</span>(<span class="dv">30</span> <span class="op">+</span> <span class="dv">02</span>) <span class="op">/</span> (<span class="dv">30</span> <span class="op">+</span> <span class="dv">02</span> <span class="op">+</span> <span class="dv">40</span> <span class="op">+</span> <span class="dv">28</span>)</span></code></pre></div>
+<p>Uneven distributions can make accuracy a misleading metric in vbinary classification.</p>
+<p><em>Precision</em> and <em>Recall</em> address this shortcoming in using accuracy to evaluate classification models.</p>
+<p><InlineNotification kind="{"warning"}"></p>
+<p><strong>Precision</strong></p>
+<p><br /></p>
+<p><em>The ratio of positive predictions made by the model that are actually positive.</em></p>
+<p><br /></p>
+<ul>
+<li><code>(30 )/(30 + 40)</code></li>
+<li><code>30 / 70</code></li>
+<li><code>0.42857142857142855</code> or <code>42.86%</code></li>
+</ul>
+<p></InlineNotification></p>
+<p>While this is an imporovement we can still game even this metric by intentionally setting a conservative policy on emmiting positive predictions.</p>
+<p><InlineNotification kind="{"warning"}"></p>
+<p><strong>Recall</strong></p>
+<p><br /></p>
+<p><em>The ratio of actual positive examples that are classified as positive.</em></p>
+<p><br /></p>
+<ul>
+<li><code>(30 )/(30 + 28)</code></li>
+<li><code>30 / 58</code></li>
+<li><code>0.5172413793103449</code> or <code>51.72%</code></li>
+</ul>
+<p></InlineNotification></p>
+<p>To game this metric one can declare all examples positive and score 100 recall.</p>
+<p>Precision and recall is about tuning the model.</p>
+<p>We tune the model to:</p>
+<ul>
+<li>find at least <em>X%</em> of positives, <em>Precision at X% Recall</em></li>
+<li>adjust tricky places where there is uncertainty about the correct answer warrant this kind of analysis.</li>
+</ul>
+<p>The threshold value applied to the sigmoid output doesnt necessarily have to be 0.5 by setting it lower it can allow the model to be more liberal in applying positive outputs (higher recall lower precision). Setting thresholds higher can lead to higher precision and lower recall by being more cautious in applying positive labels.</p>
+<h3 id="the-roc-curve---tradeoffs-in-binary-classification">3.2.3 The ROC Curve - <em>Tradeoffs in Binary Classification</em></h3>
+<p><em><strong>Receiver operating characteristic</strong></em> or <em><strong>ROC</strong></em> stems from early radar systems.</p>
+<ul>
+<li>The horizontal access of an roc curve is the false positive rate
+<ul>
+<li><code>FPR = #FP / (#FP + #TN)</code></li>
+<li>the ratio of actually negative examples to the number false positives</li>
+</ul></li>
+<li>The vertical axis is the true positive rate.
+<ul>
+<li><code>TPR = #TP / ( #TP + #FN) = recall</code></li>
+<li>this is the same definintion as recall</li>
+</ul></li>
+</ul>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

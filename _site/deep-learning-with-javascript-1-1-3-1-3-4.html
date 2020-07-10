@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="manifest" href="./images/site.webmanifest">
+    <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#373737">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <title>jamescarl.ai - Deep Learning with Javascript 1.1.3-1.3.4</title>
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+
+</head>
+
+<body style="background-color: white;">
+    <header>
+        <div class="logo">
+            <a href="./"><img src="./images/logo.svg" style="height: 5rem;" /></a>
+        </div>
+        <nav>
+            <a class="bx--link" href="./">Home</a>
+            <a class="bx--link" href="./about.html">About</a>
+            <a class="bx--link" href="./contact.html">Contact</a>
+            <a class="bx--link" href="./archive.html">Archive</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deep Learning with Javascript 1.1.3-1.3.4</h1>
+        <article>
+    <section class="header">
+        Posted on March 22, 2020
+        
+    </section>
+    <section>
+        <p><PageDescription></p>
+<p>Notes on chapter one of Deep Learning with Javascript</p>
+<p></PageDescription></p>
+<p><AnchorLinks> <AnchorLink>1.1.3 Neural Networks and Deep Learning</AnchorLink> <AnchorLink>1.1.4 Why Deep Learning Now?</AnchorLink> <AnchorLink>1.2 Combining Deep Learning and JS</AnchorLink> <AnchorLink>1.2.1 Deep Learning in Node.js</AnchorLink> <AnchorLink>1.2.2 The JavaScript Ecosystem </AnchorLink> <AnchorLink>1.3 Why Tensorflow.js</AnchorLink> <AnchorLink>1.3.1 Tensorflow, Keras, and Tensorflow.js</AnchorLink> <AnchorLink>1.3.2 Tensorflow.js Comparison to Other Libraries</AnchorLink> <AnchorLink>1.3.3 How Tensorflow is Being Used</AnchorLink> <AnchorLink>1.3.4 Summary</AnchorLink> </AnchorLinks></p>
+<h3 id="neural-networks-and-deep-learning">1.1.3 Neural Networks and Deep Learning</h3>
+<p>Deep refers only to the depth of layers and saysnothin about the meaning of the results achieved through this process.</p>
+<p><InlineNotification></p>
+<p><strong>Its important to know some other machine learning techniques</strong></p>
+<p></InlineNotification></p>
+<p><Tabs> <Tab label="The Naive Bayes classifier"></p>
+<ul>
+<li>This is how to estimate the probability of an event given
+<ul>
+<li>The <em>a priori</em> belief of how likely the event is</li>
+<li>The observed facts related to the event</li>
+</ul></li>
+<li>This is used to classify data given observed facts which are assumed to be mutually exclusive</li>
+</ul>
+<p></Tab> <Tab label="Logistic Regression"></p>
+<ul>
+<li>A classification technique that can be used often to get a feel for the task at hand.</li>
+</ul>
+<p></Tab> <Tab label="Kernel Methods"></p>
+<ul>
+<li>SVMs (Support Vector Machines) are the best examples, and tackle binary classification problems by mapping original data into higher dimensionality and finds a transformation that maximizes the distance <em>called a margin</em> between the the two.</li>
+</ul>
+<p></Tab> <Tab label="Decision Trees"></p>
+<ul>
+<li>These predict outputs given inputs in a flowchart like structure, this yes no output is followed until then end of the flow chart is reached and is easy for humans to understand.</li>
+</ul>
+<p></Tab> </Tabs></p>
+<p>Around 2012 the solution to the ImageNet problem has made deep neural networks the go to solution for this problem. They work generally on all <em>perceptual</em> tasks for example speech recognition. Deep learning is makes problem solving easier by automating the most dificult part of machine learning called <em>feature engineering</em>.</p>
+<p>Feature engineering required scientists to make data moreamenable to SVMs and Decision Trees where Deep Learning automates this step. Two esential characteristics of how deep learning learns from the data is the layered way in which more and more complex layers of representation are developed and the fact tht each of these layers is learned jointly and updated to follow the needs of the layer above and the layer below.</p>
+<h3 id="why-deep-learning-now">1.1.4 Why Deep Learning Now?</h3>
+<ul>
+<li>Hardware</li>
+<li>Datasets and Benchmarks</li>
+<li>Algorithmic Advances Matrix multiplication and addition used in deep learning is highly paralelizable and can leverage GPUs without these it would be impossible to train many DNNs.</li>
+</ul>
+<p>Common benchmarks and public competition have also helped the rise of deep learning.</p>
+<p>A key issue was gradient propogation through deep layers. The feedback signal would fade as layers increased. This was solved by - Better activation functions<br />
+- RELU - Better weight initialization - Glorot initialization - Better optimization schemes<br />
+- RMSProp and ADAM otimizers</p>
+<h2 id="combining-deep-learning-and-js">1.2 Combining Deep Learning and JS</h2>
+<p>Combining deep learning and the web browser can create unique opportunties. Once a model is trained it must be deployed somewhere to make predictions on real data. Without deployment training a model is a waste. This means the browser is a logical place to deploy a machine learning model if the model expects the kind of data available in the browser. It also has the added benefits of reduced server cost lower inference latency, privacy, instant GPU acceleration, and instant access. - <em>Reduced Server Cost</em> - The overhead of downloading a model can be reduced by caching and local storage capabilities. - <em>Lower Inference Latency</em> - Applications that involve realtime audio demand the model be deployed to the client side. - <em>Instant WebGL Acceleration</em> - The browsers WebGL API can be leveraged to accelerate neural networks - It is also possible to train or fine-tune NNs purely inside the web browser - <em>Instant Access</em> - Browser applications have the advantage of zero install</p>
+<p><InlineNotification></p>
+<p><strong>SIMD vs. SISD</strong></p>
+<p>A GPU’s SIMD process over large amounts of data will out perform a CPU’s SISD method even though a CPU might process individual results faster.</p>
+<p></InlineNotification></p>
+<h3 id="deep-learning-in-node.js">1.2.1 Deep Learning in Node.js</h3>
+<p>The <em>tfjs-node</em> library also binds to the compiled native Tensorflow code from C++ and CUDA. This makes JS a suitable language for machine learning even when training large models.</p>
+<p>Node.js x Tensorflow shines in two areas performance and compatibility with existing skill sets. When the model is small enough for the language interpreter performance to be a factor Node.js’s JIT V8 engine is faster than python.</p>
+<h3 id="the-javascript-ecosystem">1.2.2 The JavaScript Ecosystem</h3>
+<p>The vast number of libraries and platforms on which javascript runs also make it a good choice when deciding to develop machine learning models.</p>
+<h2 id="why-tensorflow.js">1.3 Why Tensorflow.js</h2>
+<p>You have to ⛏ something..</p>
+<h3 id="tensorflow-keras-and-tensorflow.js">1.3.1 Tensorflow, Keras, and Tensorflow.js</h3>
+<p>This name reflects what the library does data representations called <em>tensors</em> flow through various layers in order to solve a task.</p>
+<blockquote>
+<p>Tensors are just multidimensional arrays</p>
+</blockquote>
+<p>In DNNs every piece of data and every result is represented as a tensor. A grayscale image is a 2D array of numbers while a color image would be a 3D array of numbers. The section on <a href="./posts/202003221039--haskell-school-of-music-1.7-1.9#1.7.3-data-abstraction">using lists in functional abstraction</a> might have some relation here. <!-- [[202003221039--haskell-school-of-music-1.7-1.9]] --> <!-- [[202003211701--deep-learning-with-javascript--1.1-1.1.3]] --> Tensors have two properties <a href="./posts/202003211427--haskell-school-of-music--1.4-1.6#1.5-types">data type</a> and shape. Shape describes a tensor’s size along all its dimensions.</p>
+<p>The <em>flow</em> part stems from the fact that tensors pass through a graph – a network of connected mathemeatical operations called <em>nodes</em>. A node can be several layers and takes tensors as inputs as produce tensors as outputs. The tensors can change both shape and value as it flows through the graph.</p>
+<p>Most deep learning benefits from a small quantity of layer types. In tensorflow these layer types are formed by the Keras API. Keras also allows a developer to configure how the model/network will be trained. Feeding data to the model for taining and inference. Monitoring. Saving and loading models. Plotting the architecture of models. A full deep learning workflow can be created with few lines of code using this API. The power and usability of Keras is available in Tensoflow.js and it can also import models from the Python implementation of Keras and Tensorflow.</p>
+<p>The lowest levels of the Tensorflow.js API are responsible for fast parallel processing. Above that is an <em>Ops API</em> which mimics the tensorflow low level API and above that is the <em>Layers API</em> which is mostly what developers would use.</p>
+<h3 id="tensorflow.js-comparison-to-other-libraries">1.3.2 Tensorflow.js Comparison to Other Libraries</h3>
+<ul>
+<li>It is the only library to capture the complete deeep learning workflow.
+<ul>
+<li>Supports inference &amp; training</li>
+<li>Supports web browsers and Node.js</li>
+<li>Supports GPU acceleration (WebGL &amp; CUDA)</li>
+<li>Supports defining neural net model architectures</li>
+<li>Supports conversion to and from python libraries</li>
+<li>Supports python API</li>
+<li>Supports data ingestion and data visualization</li>
+</ul></li>
+</ul>
+<p>Community support is also a huge advantage of working with Tensorflow.js</p>
+<h3 id="how-tensorflow-is-being-used">1.3.3 How Tensorflow is Being Used</h3>
+<p>Music, out of the box transfer learning, translation. ### 1.3.4 Summary The central problem of transforming data representations into ones more amenable to solving the tsk is the core of what Tensorflow.js enables using .</p>
+    </section>
+</article>
+
+    </main>
+
+    <footer>
+        Site proudly generated by
+        <a class="bx--link" href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+</body>
+<script async src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+
+</html>

@@ -1,0 +1,51 @@
+# Defaults
+**/build*
+**/.vscode
+**/.DS_Store
+# Haskell
+**/.stack-work/
+**/node_modules/
+**/.serverless/
+**/template.cabal
+
+# Scala
+**/*.class
+**/*.log
+# sbt specific
+**/.cache
+**/.history
+**/.lib/
+**/dist/*
+**/target/
+**/lib_managed/
+**/src_managed/
+**/project/boot/
+**/project/plugins/project/
+# Serverless directories
+**/.serverless
+
+# Distribution / packaging
+**/.Python
+**/env/
+**/build/
+**/develop-eggs/
+**/dist/
+**/downloads/
+**/eggs/
+**/.eggs/
+**/lib/
+**/lib64/
+**/parts/
+**/sdist/
+**/var/
+**/*.egg-info/
+**/.installed.cfg
+**/*.egg
+
+# Serverless directories
+.serverless
+# Rust
+**/node_modules
+**/.serverless
+**/target
+**/.metals
